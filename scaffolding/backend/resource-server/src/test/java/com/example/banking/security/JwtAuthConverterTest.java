@@ -51,8 +51,16 @@ class JwtAuthConverterTest {
          *       u.getRole() == UserRole.CUSTOMER
          *   ));
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        when(users.findBySubject("alice-sub")).thenReturn(Optional.empty());
+        when(users.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        converter.convert(jwt("alice-sub", "CUSTOMER", "alice@test.com"));
+
+        verify(users).save(argThat(u ->
+                u.getSubject().equals("alice-sub") &&
+                u.getEmail().equals("alice@test.com") &&
+                u.getRole() == UserRole.CUSTOMER
+        ));
     }
 
     // ------------------------------------------------------------------ subsequent login reuses existing row
@@ -74,8 +82,13 @@ class JwtAuthConverterTest {
          * Verify:
          *   verify(users, never()).save(any());
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        BankUserEntity existing = BankUserEntity.newUser(
+                "alice-sub", "alice@test.com", "Alice", UserRole.CUSTOMER);
+        when(users.findBySubject("alice-sub")).thenReturn(Optional.of(existing));
+
+        converter.convert(jwt("alice-sub", "CUSTOMER", "alice@test.com"));
+
+        verify(users, never()).save(any());
     }
 
     // ------------------------------------------------------------------ admin role mapping
