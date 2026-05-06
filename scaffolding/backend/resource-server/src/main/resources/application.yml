@@ -18,8 +18,8 @@ spring:
   #   Standalone Oracle XE:  jdbc:oracle:thin:@//localhost:1522/XEPDB1
   datasource:
     url: ${ORACLE_URL:jdbc:oracle:thin:@//localhost:1521/XEPDB1}
-    username: ${ORACLE_USER:bankapp}
-    password: ${ORACLE_PASSWORD}
+    username: bankapp
+    password: bankapp_password
     driver-class-name: oracle.jdbc.OracleDriver
 
   jpa:
@@ -31,7 +31,7 @@ spring:
     open-in-view: false
 
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     validate-on-migrate: false   # V2 seed was edited after first run; skip checksum check in dev
 
