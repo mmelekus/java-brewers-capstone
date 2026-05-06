@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Converts a validated JWT into a Spring Security authentication.
@@ -68,6 +69,20 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
          * Security note: DO NOT use the JWT subject as the principal name directly.
          * The local userId is the primary key used for ALL ownership checks.
          */
-        throw new UnsupportedOperationException("JwtAuthConverter.convert(): not yet implemented");
+        String subject = jwt.getSubject();
+
+        String email = Optional.ofNullable(jwt.getClaimAsString("email")).orElse(subject + "@mock.local");
+
+        String name = Optional.ofNullable(jwt.getClaimAsString("name")).orElse(subject);
+
+        String roleClaim = jwt.getClaimAsString("role");
+        UserRole role = "ADMIN".equalsIgnoreCase(roleClaim) ? UserRole.ADMIN : UserRole.CUSTOMER;
+
+        BankUserEntity localUser = users.findBySubject(subject)
+            .orElseGet(() -> users.save(BankUserEntity.newUser(subject, email, name, role)));
+
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + localUser.getRole().name()));
+
+        return new JwtAuthenticationToken(jwt, authorities, localUser.getUserId());
     }
 }
