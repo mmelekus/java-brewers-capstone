@@ -1,0 +1,147 @@
+GET http://localhost:8080/api/v1/accounts
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+<> 2026-05-06T124623.200.txt
+
+###
+
+GET http://localhost:8081/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+<> 2026-05-06T124607.200.json
+
+###
+
+GET http://localhost:8080/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+<> 2026-05-06T124544.200.txt
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer bc6e3b44-8556-4c24-b570-e0b1344c9ac4
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer 488f0b58-6f38-44e5-bb0e-a12d8cd080ac
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer 7057d70f-aec9-4ca5-a3a8-d312e64a385d
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJsYXN0UmVmcmVzaFRpbWUiOjE3NzgwMTYyNzI4MjQsInhzcmZUb2tlbiI6InMwcmF0bWFmZDBvZHI3aGJjZG5kZW9xMXZvIiwianRpIjoiMmY1YWU0NmEtZmQxYi00MzFhLTk1MTgtZDZjMTkzMDQ1OWMzIiwic3ViIjoiYzZjNjNkZmYtZjVkOS00YjdjLWIzYjItY2RiYzIyODZiYzg1IiwiaWF0IjoxNzc3OTk4MDU0LCJleHAiOjE3NzgyNzU0NzJ9.FnNSCrOeFZtfv37GXV1NfVBXwdXKKku81D2p-hzRlcQ
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer 7C1144A3A421178201251AA5BE196318
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/accounts
+Authorization: Bearer 7057d70f-aec9-4ca5-a3a8-d312e64a385d
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer 7057d70f-aec9-4ca5-a3a8-d312e64a385d
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer 7057d70f-aec9-4ca5-a3a8-d312e64a385d
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/api/v1/accounts
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=D4BC6D4278ED9C25FEDE49682CAC53C2; XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+###
+
+GET http://localhost:8080/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+<> 2026-05-06T123551.200.txt
+
+###
+
+GET http://localhost:8080/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: XSRF-TOKEN=3d299510-eb2a-4ed4-9ddf-e66beed82202
+
+<> 2026-05-06T123430.500.json
+
+###
+
+GET http://localhost:8080/health
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2026.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+<> 2026-05-06T123351.500.json
+
+###
+

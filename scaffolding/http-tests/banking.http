@@ -5,7 +5,7 @@
 # it below. Tokens last ~1 hour.
 
 @host = http://localhost:8080
-@token = PASTE_GOOGLE_ACCESS_TOKEN_HERE
+@token = bc6e3b44-8556-4c24-b570-e0b1344c9ac4
 
 ### health (public)
 GET {{host}}/health

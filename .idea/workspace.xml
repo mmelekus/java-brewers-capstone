@@ -39,6 +39,10 @@
     &quot;accountId&quot;: &quot;15459f16-e247-4a80-98b9-bf95ca9e8284&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8,
   &quot;fromUser&quot;: false
@@ -48,22 +52,64 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Source/java-brewers-capstone&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "HTTP Request.banking | health (public).executor": "Run",
+    "HTTP Request.banking | my accounts.executor": "Run",
+    "HTTP Request.banking | my user (creates row on first login).executor": "Run",
+    "HTTP Request.banking | no token — expect 401.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Source/java-brewers-capstone",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="banking | health (public)" value="STOPPED" />
+              <entry key="banking | my accounts" value="STOPPED" />
+              <entry key="banking | my user (creates row on first login)" value="STOPPED" />
+              <entry key="banking | no token — expect 401" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="HTTP Request.banking | no token — expect 401">
+    <configuration name="banking | health (public)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/scaffolding/http-tests/banking.http" executionIdentifier="health (public)" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="banking | my accounts" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/scaffolding/http-tests/banking.http" executionIdentifier="my accounts" index="4" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="banking | my user (creates row on first login)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/scaffolding/http-tests/banking.http" executionIdentifier="my user (creates row on first login)" index="3" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="banking | no token — expect 401" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/scaffolding/http-tests/banking.http" executionIdentifier="no token — expect 401" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.banking | no token — expect 401" />
+        <item itemvalue="HTTP Request.banking | health (public)" />
+        <item itemvalue="HTTP Request.banking | my user (creates row on first login)" />
+        <item itemvalue="HTTP Request.banking | my accounts" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="8a6138e7-5a18-4452-b3da-47bc2c0fc29c" name="Changes" comment="" />
@@ -71,7 +117,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778080550522</updated>
-      <workItem from="1778080552634" duration="2412000" />
+      <workItem from="1778080552634" duration="3010000" />
     </task>
     <servers />
   </component>
