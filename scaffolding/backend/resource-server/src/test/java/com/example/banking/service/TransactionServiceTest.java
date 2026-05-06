@@ -3,6 +3,7 @@ package com.example.banking.service;
 import com.example.banking.dto.NewTransactionRequest;
 import com.example.banking.dto.TransactionDto;
 import com.example.banking.exception.InsufficientFundsException;
+import com.example.banking.exception.PaymentProcessorException;
 import com.example.banking.exception.ResourceNotFoundException;
 import com.example.banking.kafka.TransactionEventPublisher;
 import com.example.banking.model.AccountEntity;
@@ -48,6 +49,7 @@ class TransactionServiceTest {
 
     @Test
     void deposit_credits_balance_and_returns_completed_row() {
+
         /*
          * TODO (Day 1 — Step 3a): Write the deposit happy-path unit test.
          *
@@ -66,7 +68,21 @@ class TransactionServiceTest {
          *   - acct.getBalance() is equal by comparing to "250.00"
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        // Setup
+        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("200.00"));
+        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        // Exercise
+        List<TransactionDto> result = svc.submit(
+                new NewTransactionRequest("acc_1", "DEPOSIT",
+                        new BigDecimal("50.00"), null, "paycheck"),
+                "usr_1");
+
+        // Verify
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        assertThat(acct.getBalance()).isEqualByComparingTo("250.00");
     }
 
     // ------------------------------------------------------------------ withdrawal
@@ -81,7 +97,22 @@ class TransactionServiceTest {
          * Verify: status=COMPLETED, balance becomes 70.00
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+
+        // Setup
+        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("100.00"));
+        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        // Exercise
+        List<TransactionDto> result = svc.submit(
+                new NewTransactionRequest("acc_1", "WITHDRAWAL",
+                        new BigDecimal("30.00"), null, null),
+                "usr_1");
+
+        // Verify
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        assertThat(acct.getBalance()).isEqualByComparingTo("70.00");
     }
 
     @Test
@@ -99,7 +130,19 @@ class TransactionServiceTest {
          * This test proves the service checks funds BEFORE touching the balance.
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        // Setup
+        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("10.00"));
+        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+
+        // Exercise and Verify
+        assertThatThrownBy(() -> svc.submit(
+                new NewTransactionRequest("acc_1", "WITHDRAWAL",
+                        new BigDecimal("50.00"), null, null),
+                "usr_1"))
+            .isInstanceOf(InsufficientFundsException.class);
+
+        // Verify balance unchanged - never modified since funds check happens first
+        assertThat(acct.getBalance()).isEqualByComparingTo("10.00");
     }
 
     // ------------------------------------------------------------------ ownership
@@ -145,8 +188,43 @@ class TransactionServiceTest {
          *   - source balance is 300.00
          *   - dest balance is 300.00
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+
+        // Setup
+        AccountEntity source = account("acc_src", "usr_1", new BigDecimal("500.00"));
+        AccountEntity dest = account("acc_dst", "usr_1", new BigDecimal("100.00"));
+        when(accounts.findById("acc_src")).thenReturn(Optional.of(source));
+        when(accounts.findByOwnerId("usr_1")).thenReturn(List.of(source, dest));
+        when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        // Exercise
+        List<TransactionDto> result = svc.submit(
+                new NewTransactionRequest("acc_src", "TRANSFER_OUT",
+                        new BigDecimal("200.00"), "acc_dst", "transfer"),
+                "usr_1");
+
+        // Verify
+        assertThat(result).hasSize(2);
+
+        // Find the TRANSFER_OUT and TRANSFER_IN rows
+        TransactionDto outRow = result.stream()
+                .filter(tx -> "TRANSFER_OUT".equals(tx.type()))
+                .findFirst().orElseThrow();
+        TransactionDto inRow = result.stream()
+                .filter(tx -> "TRANSFER_IN".equals(tx.type()))
+                .findFirst().orElseThrow();
+
+        // Both rows have status COMPLETED
+        assertThat(outRow.status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        assertThat(inRow.status()).isEqualTo(TransactionStatus.COMPLETED.name());
+
+        // Both rows have the same transferGroupId (not null)
+        assertThat(outRow.transferGroupId()).isNotNull();
+        assertThat(inRow.transferGroupId()).isNotNull();
+        assertThat(outRow.transferGroupId()).isEqualTo(inRow.transferGroupId());
+
+        // Balances updated correctly
+        assertThat(source.getBalance()).isEqualByComparingTo("300.00");
+        assertThat(dest.getBalance()).isEqualByComparingTo("300.00");
     }
 
     // ------------------------------------------------------------------ external transfer
@@ -192,7 +270,25 @@ class TransactionServiceTest {
          *   - assertThatThrownBy(...).isInstanceOf(PaymentProcessorException.class)
          *   - acct.getBalance() is still 1000.00  (CRITICAL: no debit on failure)
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+
+        // Setup
+        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("1000.00"));
+        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        // "ext_counterparty" is NOT in usr_1's owned accounts → external path
+        when(accounts.findByOwnerId("usr_1")).thenReturn(List.of(acct));
+        when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        // payment service throws PaymentProcessorException
+        doThrow(new PaymentProcessorException("Payment processor unavailable", null))
+                .when(paymentService).submitExternalTransfer(any(), any(), any(), any(), any());
+
+        // Exercise and Verify
+        assertThatThrownBy(() -> svc.submit(
+                new NewTransactionRequest("acc_1", "TRANSFER_OUT",
+                        new BigDecimal("250.00"), "ext_counterparty", "invoice"),
+                "usr_1"))
+            .isInstanceOf(PaymentProcessorException.class);
+
+        // CRITICAL: account balance is still 1000.00 (no debit on failure)
+        assertThat(acct.getBalance()).isEqualByComparingTo("1000.00");
     }
 }
