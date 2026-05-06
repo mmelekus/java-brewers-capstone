@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpServerErrorException;
@@ -111,7 +112,14 @@ class PaymentServiceTest {
          *       .isEqualTo("idem-key-1");
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        ArgumentCaptor<HttpEntity<Object>> captor = ArgumentCaptor.forClass((Class) HttpEntity.class);
+        when(http.exchange(eq("/payments"), eq(HttpMethod.POST), captor.capture(), eq(String.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok("{}"));
+
+        svc.submitExternalTransfer("acc_1", "ext_acc", new BigDecimal("50.00"), "USD", "idem-key-1");
+
+        assertThat(captor.getValue().getHeaders().getFirst("Idempotency-Key"))
+                .isEqualTo("idem-key-1");
     }
 
     // ------------------------------------------------------------------ 5xx → PaymentProcessorException (part 2)
@@ -131,6 +139,13 @@ class PaymentServiceTest {
          *       .isInstanceOf(PaymentProcessorException.class);
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        ArgumentCaptor<HttpEntity<Object>> captor = ArgumentCaptor.forClass((Class) HttpEntity.class);
+        when(http.exchange(eq("/payments"), eq(HttpMethod.POST), captor.capture(), eq(String.class)))
+                .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        assertThatThrownBy(() ->
+                svc.submitExternalTransfer("acc_1", "ext_acc", new BigDecimal("75.00"), "USD", "idem-789"))
+                .isInstanceOf(PaymentProcessorException.class);
+        //throw new UnsupportedOperationException("test not yet implemented");
     }
 }
