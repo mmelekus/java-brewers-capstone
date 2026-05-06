@@ -130,7 +130,11 @@ class PaymentServiceTest {
          *   assertThatThrownBy(() -> svc.submitExternalTransfer(...))
          *       .isInstanceOf(PaymentProcessorException.class);
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        when(http.exchange(eq("/payments"), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        assertThatThrownBy(() ->
+                svc.submitExternalTransfer("acc_1", "ext_acc", new BigDecimal("100.00"), "USD", "idem-key"))
+                .isInstanceOf(PaymentProcessorException.class);
     }
 }
