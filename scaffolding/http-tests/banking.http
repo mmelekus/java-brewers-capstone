@@ -5,7 +5,7 @@
 # it below. Tokens last ~1 hour.
 
 @host = http://localhost:8080
-@token = bc6e3b44-8556-4c24-b570-e0b1344c9ac4
+@token = 1331CE4A2991A694965E7C48355BE075
 
 ### health (public)
 GET {{host}}/health
