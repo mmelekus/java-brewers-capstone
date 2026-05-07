@@ -296,6 +296,7 @@ public class TransactionService {
             return List.of(TransactionDto.from(outRow), TransactionDto.from(inRow));
 
         } else {
+            //throw new ResourceNotFoundException("counterparty account", req.counterparty());
             // === External transfer path ===
             // 12. Generate an idempotency key
             String idempotencyKey = UUID.randomUUID().toString();

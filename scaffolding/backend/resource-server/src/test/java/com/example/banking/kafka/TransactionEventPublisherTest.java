@@ -72,5 +72,7 @@ class TransactionEventPublisherTest {
 
         // Must not throw — the DB transaction has already committed
         publisher.publish(event("acc_3"));
+
+        verify(kafka).send(any(), any(), any());
     }
 }

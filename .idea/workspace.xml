@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a6138e7-5a18-4452-b3da-47bc2c0fc29c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-client.cookies" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-client.cookies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
+    <list default="true" id="8a6138e7-5a18-4452-b3da-47bc2c0fc29c" name="Changes" comment="Updated team.md with Task 2.2 answers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/team.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/team.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scaffolding/http-tests/banking.http" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/http-tests/banking.http" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/java/com/example/banking/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/java/com/example/banking/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/controller/AccountControllerIntegrationTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/kafka/TransactionEventPublisherTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/kafka/TransactionEventPublisherTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,28 +48,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;HTTP Request.banking | health (public).executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.banking | my accounts.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.banking | my user (creates row on first login).executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.banking | no token — expect 401.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Source/java-brewers-capstone&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "HTTP Request.banking | health (public).executor": "Run",
+    "HTTP Request.banking | my accounts.executor": "Run",
+    "HTTP Request.banking | my user (creates row on first login).executor": "Run",
+    "HTTP Request.banking | no token — expect 401.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Source/java-brewers-capstone",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunDashboard">
     <option name="configurationStatuses">
       <map>
@@ -114,12 +114,25 @@
       <option name="presentableId" value="Default" />
       <updated>1778080550522</updated>
       <workItem from="1778080552634" duration="8340000" />
-      <workItem from="1778161849019" duration="6624000" />
+      <workItem from="1778161849019" duration="8107000" />
     </task>
+    <task id="LOCAL-00001" summary="Updated team.md with Task 2.2 answers">
+      <option name="closed" value="true" />
+      <created>1778177311331</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778177311331</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated team.md with Task 2.2 answers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated team.md with Task 2.2 answers" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
