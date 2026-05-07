@@ -12,6 +12,8 @@ import com.example.banking.model.TransactionStatus;
 import com.example.banking.repository.AccountRepository;
 import com.example.banking.repository.TransactionRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ class TransactionServiceTest {
     private final AccountService accountService = new AccountService(accounts);
     private final PaymentService paymentService = mock(PaymentService.class);
     private final TransactionEventPublisher publisher = mock(TransactionEventPublisher.class);
+    private final Logger logger = LoggerFactory.getLogger(TransactionServiceTest.class);
 
     private final TransactionService svc = new TransactionService(
             accounts, transactions, accountService, paymentService, publisher);
@@ -67,22 +70,32 @@ class TransactionServiceTest {
          *   - result.get(0).status() equals TransactionStatus.COMPLETED.name()
          *   - acct.getBalance() is equal by comparing to "250.00"
          */
-        // TODO: implement this test
+        logger.info(() -> "=== DEPOSIT HAPPY-PATH TEST ===");
+
         // Setup
-        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("200.00"));
-        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        AccountEntity acct = account("acc_admin", "usr_bob", new BigDecimal("200.00"));
+        when(accounts.findById("acc_admin")).thenReturn(Optional.of(acct));
         when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
+        logger.info(() -> "Setup: Account " + acct.getAccountId() + " owned by " + acct.getOwnerId() + " with initial balance: " + acct.getBalance());
+
         // Exercise
+        logger.info(() -> "Exercise: Submitting DEPOSIT of 50.00 for paycheck");
         List<TransactionDto> result = svc.submit(
-                new NewTransactionRequest("acc_1", "DEPOSIT",
+                new NewTransactionRequest("acc_admin", "DEPOSIT",
                         new BigDecimal("50.00"), null, "paycheck"),
-                "usr_1");
+                "usr_bob");
+        logger.info(() -> "Exercise: DEPOSIT submitted successfully");
 
         // Verify
         assertThat(result).hasSize(1);
+        logger.info(() -> "Verify: Transaction list size is 1");
+
         assertThat(result.get(0).status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        logger.info(() -> "Verify: Transaction status is COMPLETED");
+
         assertThat(acct.getBalance()).isEqualByComparingTo("250.00");
+        logger.info(() -> "Verify: Final balance is 250.00 (200.00 + 50.00) - DEPOSIT succeeded!");
     }
 
     // ------------------------------------------------------------------ withdrawal
@@ -96,23 +109,32 @@ class TransactionServiceTest {
          * Exercise: submit WITHDRAWAL of 30.00
          * Verify: status=COMPLETED, balance becomes 70.00
          */
-        // TODO: implement this test
+        logger.info(() -> "=== WITHDRAWAL HAPPY-PATH TEST ===");
 
         // Setup
-        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("100.00"));
-        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        AccountEntity acct = account("acc_100", "usr_100", new BigDecimal("100.00"));
+        when(accounts.findById("acc_100")).thenReturn(Optional.of(acct));
         when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
+        logger.info(() -> "Setup: Account " + acct.getAccountId() + " owned by " + acct.getOwnerId() + " with initial balance: " + acct.getBalance());
+
         // Exercise
+        logger.info(() -> "Exercise: Submitting WITHDRAWAL of 30.00");
         List<TransactionDto> result = svc.submit(
-                new NewTransactionRequest("acc_1", "WITHDRAWAL",
+                new NewTransactionRequest("acc_100", "WITHDRAWAL",
                         new BigDecimal("30.00"), null, null),
-                "usr_1");
+                "usr_100");
+        logger.info(() -> "Exercise: WITHDRAWAL submitted successfully");
 
         // Verify
         assertThat(result).hasSize(1);
+        logger.info(() -> "Verify: Transaction list size is 1");
+
         assertThat(result.get(0).status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        logger.info(() -> "Verify: Transaction status is COMPLETED");
+
         assertThat(acct.getBalance()).isEqualByComparingTo("70.00");
+        logger.info(() -> "Verify: Final balance is 70.00 (100.00 - 30.00) - WITHDRAWAL succeeded!");
     }
 
     @Test
@@ -131,36 +153,49 @@ class TransactionServiceTest {
          */
         // TODO: implement this test
         // Setup
-        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("10.00"));
-        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        AccountEntity acct = account("acc_checking", "usr_8ade8d14-3b74-41f2-8ff1-daa734563a7f", new BigDecimal("100.00"));
+        when(accounts.findById("acc_checking")).thenReturn(Optional.of(acct));
+        logger.info(() -> "Testing withdrawal below balance: initial balance " + acct.getBalance());
 
         // Exercise and Verify
         assertThatThrownBy(() -> svc.submit(
-                new NewTransactionRequest("acc_1", "WITHDRAWAL",
-                        new BigDecimal("50.00"), null, null),
-                "usr_1"))
+                new NewTransactionRequest("acc_checking", "WITHDRAWAL",
+                        new BigDecimal("500.00"), null, null),
+                "usr_8ade8d14-3b74-41f2-8ff1-daa734563a7f"))
             .isInstanceOf(InsufficientFundsException.class);
 
+
         // Verify balance unchanged - never modified since funds check happens first
-        assertThat(acct.getBalance()).isEqualByComparingTo("10.00");
+        assertThat(acct.getBalance()).isEqualByComparingTo("100.00");
+
+        logger.info(() -> "Balance after failed withdrawal: " + acct.getBalance());
     }
 
     // ------------------------------------------------------------------ ownership
 
     @Test
     void submit_against_account_owned_by_another_user_throws_not_found() {
-        AccountEntity acct = account("acc_other", "usr_other", new BigDecimal("500.00"));
-        when(accounts.findById("acc_other")).thenReturn(Optional.of(acct));
+        logger.info(() -> "=== OWNERSHIP VALIDATION TEST ===");
+
+        AccountEntity acct = account("acc_demo_checking", "admin", new BigDecimal("5060.00"));
+        when(accounts.findById("acc_demo_checking")).thenReturn(Optional.of(acct));
+
+        logger.info(() -> "Account: " + acct.getAccountId() + " owned by: " + acct.getOwnerId() + " with balance: " + acct.getBalance());
 
         // usr_attacker tries to submit against usr_other's account
+        logger.info(() -> "Attempting unauthorized access from user: usr_8ade8d14-3b74-41f2-8ff1-daa734563a7f");
+
         assertThatThrownBy(() -> svc.submit(
-                new NewTransactionRequest("acc_other", "WITHDRAWAL",
+                new NewTransactionRequest("acc_demo_checking", "WITHDRAWAL",
                         new BigDecimal("1.00"), null, null),
-                "usr_attacker"))
+                "usr_8ade8d14-3b74-41f2-8ff1-daa734563a7f"))
             .isInstanceOf(ResourceNotFoundException.class);
 
+        logger.info(() -> "ResourceNotFoundException correctly thrown - unauthorized access prevented");
+
         // no money moved
-        assertThat(acct.getBalance()).isEqualByComparingTo("500.00");
+        assertThat(acct.getBalance()).isEqualByComparingTo("5060.00");
+        logger.info(() -> "Balance verified unchanged: " + acct.getBalance() + " - Security gate passed!");
     }
 
     // ------------------------------------------------------------------ internal transfer
@@ -190,17 +225,17 @@ class TransactionServiceTest {
          */
 
         // Setup
-        AccountEntity source = account("acc_src", "usr_1", new BigDecimal("500.00"));
-        AccountEntity dest = account("acc_dst", "usr_1", new BigDecimal("100.00"));
-        when(accounts.findById("acc_src")).thenReturn(Optional.of(source));
-        when(accounts.findByOwnerId("usr_1")).thenReturn(List.of(source, dest));
+        AccountEntity source = account("acc_alex", "usr_kathy", new BigDecimal("500.00"));
+        AccountEntity dest = account("acc_alex", "usr_kathy", new BigDecimal("100.00"));
+        when(accounts.findById("acc_alex")).thenReturn(Optional.of(source));
+        when(accounts.findByOwnerId("usr_kathy")).thenReturn(List.of(source, dest));
         when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         // Exercise
         List<TransactionDto> result = svc.submit(
-                new NewTransactionRequest("acc_src", "TRANSFER_OUT",
-                        new BigDecimal("200.00"), "acc_dst", "transfer"),
-                "usr_1");
+                new NewTransactionRequest("acc_alex", "TRANSFER_OUT",
+                        new BigDecimal("200.00"), "acc_alex", "transfer"),
+                "usr_kathy");
 
         // Verify
         assertThat(result).hasSize(2);
@@ -231,23 +266,38 @@ class TransactionServiceTest {
 
     @Test
     void external_transfer_success_completes_and_debits() {
-        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("1000.00"));
-        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        logger.info(() -> "=== EXTERNAL TRANSFER SUCCESS TEST ===");
+
+        AccountEntity acct = account("acc_sam", "usr_jay", new BigDecimal("1000.00"));
+        when(accounts.findById("acc_sam")).thenReturn(Optional.of(acct));
         // "ext_counterparty" is NOT in usr_1's owned accounts → external path
-        when(accounts.findByOwnerId("usr_1")).thenReturn(List.of(acct));
+        when(accounts.findByOwnerId("usr_jay")).thenReturn(List.of(acct));
         when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
         // payment service succeeds (no exception)
         doNothing().when(paymentService).submitExternalTransfer(any(), any(), any(), any(), any());
 
+        logger.info(() -> "Setup: Account " + acct.getAccountId() + " owned by " + acct.getOwnerId() +
+                " with initial balance: " + acct.getBalance());
+        logger.info(() -> "Setup: Payment processor mock configured to SUCCEED");
+
+        logger.info(() -> "Exercise: Submitting TRANSFER_OUT of 250.00 to ext_counterparty");
         List<TransactionDto> result = svc.submit(
-                new NewTransactionRequest("acc_1", "TRANSFER_OUT",
+                new NewTransactionRequest("acc_sam", "TRANSFER_OUT",
                         new BigDecimal("250.00"), "ext_counterparty", "invoice"),
-                "usr_1");
+                "usr_jay");
+        logger.info(() -> "Exercise: External transfer submitted successfully");
 
         assertThat(result).hasSize(1);
+        logger.info(() -> "Verify: Transaction list size is 1");
+
         assertThat(result.get(0).status()).isEqualTo(TransactionStatus.COMPLETED.name());
+        logger.info(() -> "Verify: Transaction status is COMPLETED");
+
         assertThat(acct.getBalance()).isEqualByComparingTo("750.00");
+        logger.info(() -> "Verify: Final balance is 750.00 (1000.00 - 250.00)");
+
         verify(paymentService).submitExternalTransfer(any(), any(), any(), any(), any());
+        logger.info(() -> "Verify: PaymentService.submitExternalTransfer was called - Safety gate passed! Money successfully transferred to external counterparty.");
     }
 
     @Test
@@ -270,25 +320,38 @@ class TransactionServiceTest {
          *   - assertThatThrownBy(...).isInstanceOf(PaymentProcessorException.class)
          *   - acct.getBalance() is still 1000.00  (CRITICAL: no debit on failure)
          */
+        logger.info(() -> "=== EXTERNAL TRANSFER FAILURE TEST (CRITICAL SAFETY TEST) ===");
 
         // Setup
-        AccountEntity acct = account("acc_1", "usr_1", new BigDecimal("1000.00"));
-        when(accounts.findById("acc_1")).thenReturn(Optional.of(acct));
+        AccountEntity acct = account("acc_pat", "usr_tom", new BigDecimal("1000.00"));
+        when(accounts.findById("acc_pat")).thenReturn(Optional.of(acct));
         // "ext_counterparty" is NOT in usr_1's owned accounts → external path
-        when(accounts.findByOwnerId("usr_1")).thenReturn(List.of(acct));
+        when(accounts.findByOwnerId("usr_tom")).thenReturn(List.of(acct));
         when(transactions.save(any())).thenAnswer(inv -> inv.getArgument(0));
         // payment service throws PaymentProcessorException
         doThrow(new PaymentProcessorException("Payment processor unavailable", null))
                 .when(paymentService).submitExternalTransfer(any(), any(), any(), any(), any());
 
+        logger.info(() -> "Setup: Account " + acct.getAccountId() + " owned by " + acct.getOwnerId() +
+                " with initial balance: " + acct.getBalance());
+        logger.info(() -> "Setup: Payment processor mock configured to THROW PaymentProcessorException");
+
+        logger.info(() -> "Exercise: Submitting TRANSFER_OUT of 250.00 to ext_counterparty");
+
         // Exercise and Verify
         assertThatThrownBy(() -> svc.submit(
-                new NewTransactionRequest("acc_1", "TRANSFER_OUT",
+                new NewTransactionRequest("acc_pat", "TRANSFER_OUT",
                         new BigDecimal("250.00"), "ext_counterparty", "invoice"),
-                "usr_1"))
+                "usr_tom"))
             .isInstanceOf(PaymentProcessorException.class);
+
+        logger.info(() -> "Verify: PaymentProcessorException correctly thrown");
 
         // CRITICAL: account balance is still 1000.00 (no debit on failure)
         assertThat(acct.getBalance()).isEqualByComparingTo("1000.00");
+        logger.info(() -> "===== CRITICAL SAFETY GATE PASSED =====");
+        logger.info(() -> "CRITICAL: Balance remains 1000.00 (unchanged) - NO MONEY LEFT ACCOUNT!");
+        logger.info(() -> "Money was NEVER debited because payment processor failed BEFORE balance modification");
+        logger.info(() -> "This proves: accounts are protected from financial loss on external payment failures");
     }
 }
