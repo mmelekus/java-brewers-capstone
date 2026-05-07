@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8a6138e7-5a18-4452-b3da-47bc2c0fc29c" name="Changes" comment="Updated team.md with Task 2.2 answers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/java/com/example/banking/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/java/com/example/banking/service/TransactionService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/controller/AccountControllerIntegrationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/kafka/TransactionEventPublisherTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/kafka/TransactionEventPublisherTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +112,7 @@
       <option name="presentableId" value="Default" />
       <updated>1778080550522</updated>
       <workItem from="1778080552634" duration="8340000" />
-      <workItem from="1778161849019" duration="8107000" />
+      <workItem from="1778161849019" duration="8952000" />
     </task>
     <task id="LOCAL-00001" summary="Updated team.md with Task 2.2 answers">
       <option name="closed" value="true" />
