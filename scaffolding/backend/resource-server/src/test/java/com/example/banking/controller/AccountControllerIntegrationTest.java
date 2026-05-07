@@ -2,6 +2,7 @@ package com.example.banking.controller;
 
 import com.example.banking.dto.NewTransactionRequest;
 import com.example.banking.dto.TransactionDto;
+import com.example.banking.exception.ResourceNotFoundException;
 import com.example.banking.kafka.TransactionEvent;
 import com.example.banking.kafka.TransactionEventPublisher;
 import com.example.banking.service.AccountService;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -37,7 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @EmbeddedKafka spins up an in-process broker for the Kafka emission test.
  */
-@SpringBootTest
+//@SpringBootTest
+@WebMvcTest(AccountController.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @EmbeddedKafka(partitions = 1, topics = {"transactions.completed"})
@@ -65,7 +68,8 @@ class AccountControllerIntegrationTest {
          * This verifies that SecurityConfig correctly requires authentication.
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        mockMvc.perform(get("/api/v1/accounts"))
+                .andExpect(status().isUnauthorized());
     }
 
     // ------------------------------------------------------------------ 403
@@ -73,13 +77,13 @@ class AccountControllerIntegrationTest {
     @Test
     void customer_hitting_admin_endpoint_returns_403() throws Exception {
         mockMvc.perform(get("/api/v1/admin/users")
-                       .with(jwt().jwt(j -> j
-                           .subject("google-sub-123")
-                           .claim("email", "alice@example.com")
-                           .claim("role", "CUSTOMER"))
-                           .authorities(new org.springframework.security.core.authority
-                                   .SimpleGrantedAuthority("ROLE_CUSTOMER"))))
-               .andExpect(status().isForbidden());
+                        .with(jwt().jwt(j -> j
+                                        .subject("google-sub-123")
+                                        .claim("email", "alice@example.com")
+                                        .claim("role", "CUSTOMER"))
+                                .authorities(new org.springframework.security.core.authority
+                                        .SimpleGrantedAuthority("ROLE_CUSTOMER"))))
+                .andExpect(status().isForbidden());
     }
 
     // ------------------------------------------------------------------ ownership (404)
@@ -100,7 +104,16 @@ class AccountControllerIntegrationTest {
          * This prevents an attacker from learning which account IDs exist.
          */
         // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        when(accountService.loadOwned(eq("acc_other"), any()))
+                .thenThrow(new ResourceNotFoundException("account", "acc_other"));
+
+        mockMvc.perform(get("/api/v1/accounts/acc_other")
+            .with(jwt().jwt(j -> j
+                                        .subject("google-sub-123")
+                                        .claim("email", "alice@example.com"))
+                .authorities(new org.springframework.security.core.authority
+                        .SimpleGrantedAuthority("ROLE_CUSTOMER"))))
+                .andExpect(status().isNotFound());
     }
 
     // ------------------------------------------------------------------ deposit happy path
@@ -132,8 +145,45 @@ class AccountControllerIntegrationTest {
          *   - jsonPath("$[0].amount").value(50.00)
          *   - verify(transactionService).publishEvent(any(TransactionEvent.class))
          */
-        // TODO: implement this test
-        throw new UnsupportedOperationException("test not yet implemented");
+        // Setup: Create a TransactionDto stub representing the completed deposit
+        LocalDateTime now = LocalDateTime.now();
+        TransactionDto depositDto = new TransactionDto(
+                "txn_1", "acc_1", "DEPOSIT", new BigDecimal("50.00"),
+                "COMPLETED", null, null, "paycheck", now);
+
+        // Stub transactionService.submit(...) to return List.of(txDto)
+        when(transactionService.submit(any(NewTransactionRequest.class), any()))
+                .thenReturn(List.of(depositDto));
+
+        // Stub transactionService.toEvent(...) to return a TransactionEvent
+        when(transactionService.toEvent(any(), any(), eq("USD")))
+                .thenReturn(new TransactionEvent("evt_1", "txn_1", "acc_1",
+                        "usr_1", "DEPOSIT", new BigDecimal("50.00"),
+                        "USD", "COMPLETED", null, null, Instant.now()));
+
+        // Create the request body
+        String body = mapper.writeValueAsString(
+                new NewTransactionRequest("acc_1", "DEPOSIT", new BigDecimal("50.00"), null, "paycheck"));
+
+        // Exercise: POST to /api/v1/transactions
+        mockMvc.perform(post("/api/v1/transactions")
+                        .with(jwt().jwt(j -> j
+                                        .subject("google-sub-123")
+                                        .claim("email", "alice@example.com"))
+                                .authorities(new org.springframework.security.core.authority
+                                        .SimpleGrantedAuthority("ROLE_CUSTOMER")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                // Verify: Assert 201 Created
+                .andExpect(status().isCreated())
+                // Verify: Response body contains transaction with status=COMPLETED
+                .andExpect(jsonPath("$[0].status").value("COMPLETED"))
+                .andExpect(jsonPath("$[0].amount").value(50.00))
+                .andExpect(jsonPath("$[0].type").value("DEPOSIT"))
+                .andExpect(jsonPath("$[0].accountId").value("acc_1"));
+
+        // Verify: publisher.publishEvent() was called exactly once
+        verify(publisher, times(1)).publish(any(TransactionEvent.class));
     }
 
     // ------------------------------------------------------------------ internal transfer creates two rows
@@ -160,19 +210,19 @@ class AccountControllerIntegrationTest {
                         new BigDecimal("200.00"), "acc_dst", "rent"));
 
         mockMvc.perform(post("/api/v1/transactions")
-                       .with(jwt().jwt(j -> j
-                           .subject("google-sub-123")
-                           .claim("email", "alice@example.com"))
-                           .authorities(new org.springframework.security.core.authority
-                                   .SimpleGrantedAuthority("ROLE_CUSTOMER")))
-                       .contentType(MediaType.APPLICATION_JSON)
-                       .content(body))
-               .andExpect(status().isCreated())
-               .andExpect(jsonPath("$.length()").value(2))
-               .andExpect(jsonPath("$[0].type").value("TRANSFER_OUT"))
-               .andExpect(jsonPath("$[1].type").value("TRANSFER_IN"))
-               .andExpect(jsonPath("$[0].transferGroupId").value("grp_abc"))
-               .andExpect(jsonPath("$[1].transferGroupId").value("grp_abc"));
+                        .with(jwt().jwt(j -> j
+                                        .subject("google-sub-123")
+                                        .claim("email", "alice@example.com"))
+                                .authorities(new org.springframework.security.core.authority
+                                        .SimpleGrantedAuthority("ROLE_CUSTOMER")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].type").value("TRANSFER_OUT"))
+                .andExpect(jsonPath("$[1].type").value("TRANSFER_IN"))
+                .andExpect(jsonPath("$[0].transferGroupId").value("grp_abc"))
+                .andExpect(jsonPath("$[1].transferGroupId").value("grp_abc"));
     }
 
     // ------------------------------------------------------------------ external transfer 503 → 502
@@ -187,15 +237,15 @@ class AccountControllerIntegrationTest {
                         new BigDecimal("100.00"), "ext_counterparty", "invoice"));
 
         mockMvc.perform(post("/api/v1/transactions")
-                       .with(jwt().jwt(j -> j
-                           .subject("google-sub-123")
-                           .claim("email", "alice@example.com"))
-                           .authorities(new org.springframework.security.core.authority
-                                   .SimpleGrantedAuthority("ROLE_CUSTOMER")))
-                       .contentType(MediaType.APPLICATION_JSON)
-                       .content(body))
-               .andExpect(status().isBadGateway())
-               .andExpect(jsonPath("$.code").value("PAYMENT_PROCESSOR_ERROR"));
+                        .with(jwt().jwt(j -> j
+                                        .subject("google-sub-123")
+                                        .claim("email", "alice@example.com"))
+                                .authorities(new org.springframework.security.core.authority
+                                        .SimpleGrantedAuthority("ROLE_CUSTOMER")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.code").value("PAYMENT_PROCESSOR_ERROR"));
     }
 
     // ------------------------------------------------------------------ health (public)
@@ -203,7 +253,7 @@ class AccountControllerIntegrationTest {
     @Test
     void health_is_public_and_returns_200() throws Exception {
         mockMvc.perform(get("/health"))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.status").value("UP"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
     }
 }

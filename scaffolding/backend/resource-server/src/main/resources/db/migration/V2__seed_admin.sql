@@ -5,3 +5,4 @@
 
 INSERT INTO BANK_USERS (USER_ID, SUBJECT, EMAIL, DISPLAY_NAME, ROLE)
 VALUES ('usr_seed_admin', 'admin', 'admin@mock.local', 'Demo Admin', 'ADMIN');
+COMMIT;

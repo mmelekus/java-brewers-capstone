@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a6138e7-5a18-4452-b3da-47bc2c0fc29c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.idea/docs.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/team.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scaffolding/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/team.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/team.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/db/migration/V2__seed_admin.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/db/migration/V2__seed_admin.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/db/migration/V3__seed_demo_accounts.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/main/resources/db/migration/V3__seed_demo_accounts.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/controller/AccountControllerIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/scaffolding/backend/resource-server/src/test/java/com/example/banking/controller/AccountControllerIntegrationTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +36,10 @@
     &quot;accountId&quot;: &quot;15459f16-e247-4a80-98b9-bf95ca9e8284&quot;
   }
 }</component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8,
   &quot;fromUser&quot;: false
@@ -60,8 +57,10 @@
     "HTTP Request.banking | no token — expect 401.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Source/java-brewers-capstone",
     "node.js.detected.package.eslint": "true",
@@ -72,22 +71,6 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunDashboard">
-    <option name="configurationStatuses">
-      <map>
-        <entry key="HttpClient.HttpRequestRunConfigurationType">
-          <value>
-            <map>
-              <entry key="banking | health (public)" value="STOPPED" />
-              <entry key="banking | my accounts" value="STOPPED" />
-              <entry key="banking | my user (creates row on first login)" value="STOPPED" />
-              <entry key="banking | no token — expect 401" value="STOPPED" />
-            </map>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="RunManager" selected="HTTP Request.banking | no token — expect 401">
     <configuration name="banking | health (public)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/scaffolding/http-tests/banking.http" executionIdentifier="health (public)" runType="Run single request">
       <method v="2" />
@@ -117,7 +100,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778080550522</updated>
-      <workItem from="1778080552634" duration="3010000" />
+      <workItem from="1778080552634" duration="8340000" />
+      <workItem from="1778161849019" duration="1313000" />
     </task>
     <servers />
   </component>
